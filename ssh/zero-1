@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# server-01 login
+
+
+eval $("ssh-agent")
+
+
+ssh-add /alu-system_engineering-devops/ssh/school
+
+
+ssh ubuntu@54.210.111.230
