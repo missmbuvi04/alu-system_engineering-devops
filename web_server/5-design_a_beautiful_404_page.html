@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Page Not Found</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #ffffff;
+            color: #333333;
+            overflow: hidden;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+        }
+        h1 {
+            font-size: 120px;
+            margin: 0;
+            color: #4a4a4a;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+        p {
+            font-size: 24px;
+            margin: 20px 0;
+        }
+        .stars {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: #4a4a4a;
+            box-shadow: 1907px 1575px #4a4a4a, 893px 268px #4a4a4a, 1819px 812px #4a4a4a, 1312px 1103px #4a4a4a, 1094px 881px #4a4a4a, 185px 1305px #4a4a4a, 1459px 1951px #4a4a4a, 1770px 1393px #4a4a4a, 1259px 1697px #4a4a4a, 1354px 1289px #4a4a4a;
+            animation: twinkle 5s ease-in-out infinite alternate;
+        }
+        .stars::after {
+            content: " ";
+            position: absolute;
+            top: 2000px;
+            width: 2px;
+            height: 2px;
+            background: #4a4a4a;
+            box-shadow: 1907px 1575px #4a4a4a, 893px 268px #4a4a4a, 1819px 812px #4a4a4a, 1312px 1103px #4a4a4a, 1094px 881px #4a4a4a, 185px 1305px #4a4a4a, 1459px 1951px #4a4a4a, 1770px 1393px #4a4a4a, 1259px 1697px #4a4a4a, 1354px 1289px #4a4a4a;
+        }
+        .ufo {
+            font-size: 100px;
+            animation: fly 10s ease-in-out infinite;
+        }
+        @keyframes twinkle {
+            from {opacity: 0.5;}
+            to {opacity: 1;}
+        }
+        @keyframes fly {
+            0% {transform: translateX(-50vw) rotate(0deg);}
+            50% {transform: translateX(50vw) rotate(180deg);}
+            100% {transform: translateX(-50vw) rotate(360deg);}
+        }
+        .hidden-text {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            font-size: 10px;
+            opacity: 0.3;
+            color: #999999;
+        }
+        a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    <div class="container">
+<!--        <div class="ufo">🛸</div>-->
+        <h1>404</h1>
+        <p>Ceci n'est pas une page</p>
+        <p>Let's go  back to <a href="http://sagemuhodari.tech">home</a>.</p>
+    </div>
+    <div class="hidden-text">Ceci n'est pas une page</div>
+    <script>
+        // Create more stars
+        for (let i = 0; i < 50; i++) {
+            const star = document.createElement('div');
+            star.className = 'stars';
+            star.style.top = Math.random() * 100 + 'vh';
+            star.style.left = Math.random() * 100 + 'vw';
+            document.body.appendChild(star);
+        }
+    </script>
+</body>
+</html>

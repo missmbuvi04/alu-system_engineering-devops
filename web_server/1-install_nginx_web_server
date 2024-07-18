@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Installs the reverse proxy - Nginx
+
+sudo apt update -y && sudo apt upgrade -y
+sudo apt install nginx -y
+
+# Ensure Nginx listens on port 80 (not strictly necessary but included for completeness)
+sudo sed -i 's/listen 80 default_server;/listen 80 default_server;/' /etc/nginx/sites-available/default
+sudo sed -i 's/listen \[::\]:80 default_server;/listen \[::\]:80 default_server;/' /etc/nginx/sites-available/default
+
+# Replace the default index page content
+echo "Holberton School" | sudo tee /var/www/html/index.html
+
+sudo service nginx start
+sudo update-rc.d nginx defaults
