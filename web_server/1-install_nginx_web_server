@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
-# Installs the reverse proxy - Nginx
+# Update package list
+sudo apt update
 
-sudo apt update -y && sudo apt upgrade -y
-sudo apt install nginx -y
+# Install Nginx
+sudo apt install -y nginx
 
-# Ensure Nginx listens on port 80 (not strictly necessary but included for completeness)
-sudo sed -i 's/listen 80 default_server;/listen 80 default_server;/' /etc/nginx/sites-available/default
-sudo sed -i 's/listen \[::\]:80 default_server;/listen \[::\]:80 default_server;/' /etc/nginx/sites-available/default
-
-# Replace the default index page content
-echo "Holberton School" | sudo tee /var/www/html/index.html
-
+# Start Nginx
 sudo service nginx start
-sudo update-rc.d nginx defaults
+
+# Enable Nginx to start on boot
+sudo systemctl enable nginx
+
+# Create a custom HTML page
+echo "Holberton School for the win!" | sudo tee /var/www/html/index.html
+
+# Restart Nginx without using systemctl
+sudo service nginx restart
+
+# Allow HTTP traffic through the firewall (if UFW is enabled)
+sudo ufw allow 'Nginx Full'
