@@ -1,49 +1,12 @@
 #!/usr/bin/env bash
 # Script that configures a new Ubuntu machine with the following requirements:
 
+sudo apt-get update
+sudo apt-get -y install nginx
+sudo ufw allow 'Nginx HTTP'
+echo "This is Isaac from Holberton School :)" | sudo tee /var/www/html/index.html > /dev/null
 
-# Backup the original configuration file
-sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
+string_for_replacement="server_name _;\n\trewrite ^\/redirect_me https:\/\/www.github.com\/Mugisha-isaac permanent;"
+sudo sed -i "s/server_name _;/$string_for_replacement/" /etc/nginx/sites-enabled/default
 
-# Create the custom 404 page
-sudo bash -c 'cat > /var/www/html/404.html <<EOF
-<!DOCTYPE html>
-<html>
-<head>
-    <title>404 Not Found</title>
-</head>
-<body>
-    <h1>Ceci n'est pas une page</h1>
-</body>
-</html>
-EOF'
-
-# Configure Nginx
-sudo bash -c 'cat > /etc/nginx/sites-available/default <<EOF
-server {
-    listen 80;
-    server_name localhost;
-
-    # Root directory and default index
-    root /var/www/html;
-    index index.html;
-
-    # Custom 404 page configuration
-    error_page 404 /404.html;
-
-    location / {
-        try_files \$uri \$uri/ =404;
-    }
-
-    location = /404.html {
-        internal;
-    }
-}
-EOF'
-
-# Test Nginx configuration for syntax errors
-sudo nginx -t
-
-# Reload Nginx to apply changes
-sudo nginx -s reload
-
+sudo service nginx restart
