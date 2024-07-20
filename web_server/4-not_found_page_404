@@ -1,59 +1,39 @@
 #!/usr/bin/env bash
-# Script that configures a new Ubuntu machine with the following requirements:
+# Configures a new ubuntu machine by installing
+# Nginx where it should be listening on port 80
+# Serve a page that would return a Hello World string
+#
 
-# Update package list and install Nginx
-sudo apt-get update
-sudo apt-get -y install nginx
+echo -e "Updating and installing Nginx.\n"
+sudo apt-get update -y -qq && \
+	 sudo apt-get install nginx -y
 
-# Allow Nginx HTTP traffic through the firewall
+echo -e "\nSetting up some minor stuff.\n"
+
+# starting nginx service
+sudo service nginx start
+
+# allowing nginx on firewall
 sudo ufw allow 'Nginx HTTP'
 
-# Create the index.html file with a welcome message
-echo "This is Isaac from Holberton School :)" | sudo tee /var/www/html/index.html > /dev/null
+# Give the user ownership to website files for easy editing
+sudo chown -R "$USER":"$USER" /var/www/html
+sudo chmod -R 755 /var/www
 
-# Create a custom 404 error page
-sudo bash -c 'cat > /var/www/html/404.html <<EOF
-<!DOCTYPE html>
-<html>
-<head>
-    <title>404 Not Found</title>
-</head>
-<body>
-    <h1>Ceci n'est pas une page</h1>
-</body>
-</html>
-EOF'
+# Backup default index
+cp /var/www/html/index.nginx-debian.html /var/www/html/index.nginx-debian.html.bckp
 
-# Configure Nginx to handle the redirection and custom 404 page
-sudo bash -c 'cat > /etc/nginx/sites-available/default <<EOF
-server {
-    listen 80;
-    server_name _;
+# Creating new index
+echo -e "Hello World!" > /var/www/html/index.nginx-debian.html
 
-    root /var/www/html;
-    index index.html;
+# Setting up /redirect_me to a youtube video
+sudo sed -i '24i\	rewrite ^/redirect_me https://www.youtube.com/watch?v=QH2-TGUlwu4 permanent;' /etc/nginx/sites-available/default
 
-    # Redirect /redirect_me to an external URL with a 301 status
-    location /redirect_me {
-        return 301 https://www.github.com/missmbuvi04;
-    }
+# Set up a 404 page
+echo "Ceci n'est pas une page" >> /var/www/html/error_404.html
+sudo sed -i '25i\	error_page 404 /error_404.html;' /etc/nginx/sites-available/default
 
-    # Custom 404 page configuration
-    error_page 404 /404.html;
+# Restarting nginx
+sudo service nginx restart
 
-    location / {
-        try_files \$uri \$uri/ =404;
-    }
-
-    location = /404.html {
-        internal;
-    }
-}
-EOF'
-
-# Test the Nginx configuration
-sudo nginx -t
-
-# Reload Nginx to apply changes
-sudo service nginx reload
-
+echo -e "\nCompleted.\n"
