@@ -12,21 +12,27 @@ echo "Holberton School" | sudo tee /var/www/html/index.html
 
 # Write data to nginx.conf
 echo "
-events {
-
-}
+events {}
 
 http {
-	server {
-		listen 80;
+    server {
+        listen 80;
 
-		root /var/www/html;
+        root /var/www/html;
 
-		location /redirect_me {
-			return 301 https://google.com;
-		}
-	}
+        location /redirect_me {
+            return 301 https://google.com;
+        }
+
+        location / {
+            try_files \$uri \$uri/ =404;
+        }
+    }
 }" | sudo tee /etc/nginx/nginx.conf
+
+# Validate Nginx configuration
+sudo nginx -t
 
 # Reload nginx
 sudo service nginx restart
+
