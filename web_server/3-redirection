@@ -1,12 +1,35 @@
 #!/usr/bin/env bash
-# Script that configures a new Ubuntu machine with the following requirements:
 
-sudo apt-get update
-sudo apt-get -y install nginx
-sudo ufw allow 'Nginx HTTP'
-echo "This is Isaac from Holberton School :)" | sudo tee /var/www/html/index.html > /dev/null
+# This script configures Nginx to redirect /redirect_me to another page with a 301 status code
 
-string_for_replacement="server_name _;\n\trewrite ^\/redirect_me https:\/\/www.github.com\/Mugisha-isaac permanent;"
-sudo sed -i "s/server_name _;/$string_for_replacement/" /etc/nginx/sites-enabled/default
+# Backup the original configuration file
+sudo cp /etc/nginx/sites-available/default /etc/nginx/sites-available/default.bak
 
-sudo service nginx restart
+# Configure Nginx
+sudo bash -c 'cat > /etc/nginx/sites-available/default <<EOF
+server {
+    listen 80;
+    server_name localhost;
+
+    # Root directory and default index
+    root /var/www/html;
+    index index.html;
+
+    # Redirection configuration
+    location /redirect_me {
+        return 301 http://example.com;
+    }
+
+    # Other location blocks
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
+}
+EOF'
+
+# Test Nginx configuration for syntax errors
+sudo nginx -t
+
+# Reload Nginx to apply changes
+sudo nginx -s reload
+
