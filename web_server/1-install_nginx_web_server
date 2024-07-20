@@ -1,20 +1,44 @@
 #!/usr/bin/env bash
-# bash script to install nginx web server & make the following configurations:
 
-sudo apt-get update
-sudo apt-get -y install nginx
+# This script installs and configures Nginx to listen on port 80 and serve a page containing "Holberton School".
 
-# Create a custom HTML page with the content "Holberton School"
-echo "Holberton School" | sudo tee /var/www/html/index.html > /dev/null
+# Update the package list
+apt update
+
+# Install Nginx
+apt install -y nginx
 
 # Configure Nginx to listen on port 80
-sudo sed -i 's/80 default_server/80 default_server ipv6only=on/' /etc/nginx/sites-available/default
+cat <<EOF > /etc/nginx/sites-available/default
+server {
+    listen 80;
+    root /var/www/html;
+    index index.html;
+    server_name _;
 
-# Restart Nginx using service (systemctl not used)
-sudo service nginx restart
+    location / {
+        try_files \$uri \$uri/ =404;
+    }
+}
+EOF
 
-# Wait for Nginx to restart (add a delay of 2 seconds)
-sleep 2
+# Create a simple HTML page
+echo "Holberton School" > /var/www/html/index.html
 
-# Check if Nginx returns the expected content
-curl -s http://localhost | grep "Holberton School"
+# Ensure correct permissions
+chown -R www-data:www-data /var/www/html
+chmod -R 755 /var/www/html
+
+# Remove any existing Nginx PID files to avoid issues
+rm -f /run/nginx/nginx.pid
+
+# Restart Nginx (without using systemctl)
+nginx -s reload
+
+# Verify Nginx is running and listening on port 80
+netstat -tuln | grep ':80' || ss -tuln | grep ':80'
+
+# Verify the page content
+curl -I http://localhost
+curl http://localhost
+
